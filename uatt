@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+
+import os
+import subprocess
+import sys
+
+
+def main():
+    FNULL = open(os.devnull, 'w')
+    try:
+        retcode = subprocess.call(['which', 'apt'], stdout=FNULL)
+        if retcode > 0:
+            print('Child was terminated by signal' + str(retcode))
+        else:
+            print('Running apt...')
+            _apt()
+    except OSError as e:
+        print('Execution failed:', e, file=sys.stderr)
+
+
+def _apt():
+    """Run apt"""
+    import apt
+    cache = apt.cache.Cache()
+    cache.update()
+    cache.open()
+
+    package_name = "foo"
+
+    pkg = cache[package_name]
+    if pkg.is_installed:
+        print(package_name + " is installed!")
+    else:
+        print(package_name + " is not installed!")
+
+
+# _yum()
+# _flatpak()
+# _snap()
+# _pip3()
+
+
+if __name__ == '__main__':
+    main()
